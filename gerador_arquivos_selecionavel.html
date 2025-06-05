@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Arquivos por CNPJ + Órgão</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .status-card {
+            background: #f8f9ff;
+            border: 2px solid #e3e8ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .status-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #4c51bf;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #667eea;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 0.9em;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+            color: white;
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.6);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .progress-container {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        
+        .groups-preview {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        
+        .group-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.2s ease;
+        }
+        
+        .group-item:hover {
+            background: #f8f9ff;
+        }
+        
+        .group-checkbox {
+            margin-right: 15px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+        
+        .group-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .group-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .group-details {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .group-counts {
+            font-size: 0.9em;
+            color: #666;
+            text-align: right;
+        }
+        
+        .selection-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9em;
+            min-width: auto;
+            border-radius: 20px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-success {
+            background: #f0fff4;
+            border-color: #48bb78;
+            color: #2f855a;
+        }
+        
+        .alert-info {
+            background: #ebf8ff;
+            border-color: #4299e1;
+            color: #2b6cb0;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ed8936, #dd6b20);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(237, 137, 54, 0.4);
+        }
+        
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(237, 137, 54, 0.6);
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .file-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 2px;
+        }
+        
+        .file-size {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .file-status {
+            font-size: 0.9em;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        
+        .file-status.pending {
+            background: #fef5e7;
+            color: #d69e2e;
+        }
+        
+        .file-status.processing {
+            background: #e6fffa;
+            color: #319795;
+        }
+        
+        .file-status.success {
+            background: #f0fff4;
+            color: #2f855a;
+        }
+        
+        .file-status.error {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        
+        .selected-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Gerador de Arquivos</h1>
+            <p class="subtitle">Separação por CNPJ + Número do Órgão</p>
+        </div>
+        
+        <div class="status-card">
+            <div class="status-title">
+                <div class="status-icon">📁</div>
+                Status do Processamento
+            </div>
+            <div id="fileStatus">
+                <div class="alert alert-info">
+                    <strong>Aguardando arquivos:</strong> Carregue um ou mais arquivos Excel com as abas "Folhas de pagamento" e "Ocorrências de envio"
+                </div>
+            </div>
+        </div>
+        
+        <div id="filesListContainer" class="status-card" style="display: none;">
+            <div class="status-title">
+                <div class="status-icon">📄</div>
+                Arquivos Carregados
+            </div>
+            <div id="filesList" class="groups-preview">
+                <!-- Lista de arquivos será inserida aqui -->
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <label for="fileInput" class="file-label">
+                📂 Carregar Arquivos Excel
+            </label>
+            <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" multiple>
+            
+            <button id="processBtn" class="btn btn-primary" disabled>
+                🔄 Processar Dados
+            </button>
+            
+            <button id="generateBtn" class="btn btn-secondary" disabled>
+                💾 Baixar ZIP Selecionados
+            </button>
+        </div>
+        
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-text" id="progressText">Processando...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div id="statsContainer" style="display: none;">
+            <div class="status-card">
+                <div class="status-title">
+                    <div class="status-icon">📈</div>
+                    Estatísticas dos Dados
+                </div>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats serão inseridas aqui -->
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <div class="status-title">
+                    <div class="status-icon">📋</div>
+                    Selecionar Grupos para Geração
+                    <div class="selected-count" id="selectedCount">0 selecionados</div>
+                </div>
+                
+                <div class="selection-controls">
+                    <button class="btn btn-small btn-primary" onclick="selectAll()">Selecionar Todos</button>
+                    <button class="btn btn-small btn-primary" onclick="selectNone()">Desmarcar Todos</button>
+                    <button class="btn btn-small btn-primary" onclick="invertSelection()">Inverter Seleção</button>
+                </div>
+                
+                <div class="groups-preview" id="groupsPreview">
+                    <!-- Lista de grupos será inserida aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dadosProcessados = null;
+        let arquivosCarregados = [];
+        
+        // Elementos DOM
+        const fileInput = document.getElementById('fileInput');
+        const processBtn = document.getElementById('processBtn');
+        const generateBtn = document.getElementById('generateBtn');
+        const fileStatus = document.getElementById('fileStatus');
+        const filesListContainer = document.getElementById('filesListContainer');
+        const filesList = document.getElementById('filesList');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const statsContainer = document.getElementById('statsContainer');
+        const statsGrid = document.getElementById('statsGrid');
+        const groupsPreview = document.getElementById('groupsPreview');
+        const selectedCount = document.getElementById('selectedCount');
+        
+        // Event Listeners
+        fileInput.addEventListener('change', handleFileUpload);
+        processBtn.addEventListener('click', processData);
+        generateBtn.addEventListener('click', generateFiles);
+        
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            if (files.length > 0) {
+                arquivosCarregados = files.map((file, index) => ({
+                    id: index,
+                    file: file,
+                    name: file.name,
+                    size: file.size,
+                    status: 'pending'
+                }));
+                
+                displayFilesList();
+                
+                const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+                fileStatus.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>${files.length} arquivo(s) carregado(s):</strong> Total ${(totalSize / 1024 / 1024).toFixed(2)} MB
+                    </div>
+                `;
+                processBtn.disabled = false;
+                filesListContainer.style.display = 'block';
+            }
+        }
+        
+        function displayFilesList() {
+            let filesHtml = '';
+            arquivosCarregados.forEach(arquivo => {
+                const statusClass = arquivo.status;
+                const statusText = {
+                    'pending': 'Aguardando',
+                    'processing': 'Processando...',
+                    'success': 'Processado ✓',
+                    'error': 'Erro ✗'
+                }[arquivo.status];
+                
+                filesHtml += `
+                    <div class="file-item" id="file-${arquivo.id}">
+                        <div class="file-info">
+                            <div class="file-name">${arquivo.name}</div>
+                            <div class="file-size">${(arquivo.size / 1024 / 1024).toFixed(2)} MB</div>
+                        </div>
+                        <div class="file-status ${statusClass}" id="status-${arquivo.id}">
+                            ${statusText}
+                        </div>
+                    </div>
+                `;
+            });
+            filesList.innerHTML = filesHtml;
+        }
+        
+        function updateFileStatus(fileId, status, message = null) {
+            const arquivo = arquivosCarregados.find(a => a.id === fileId);
+            if (arquivo) {
+                arquivo.status = status;
+                const statusElement = document.getElementById(`status-${fileId}`);
+                if (statusElement) {
+                    statusElement.className = `file-status ${status}`;
+                    const statusText = message || {
+                        'pending': 'Aguardando',
+                        'processing': 'Processando...',
+                        'success': 'Processado ✓',
+                        'error': 'Erro ✗'
+                    }[status];
+                    statusElement.textContent = statusText;
+                }
+            }
+        }
+        
+        async function processData() {
+            if (arquivosCarregados.length === 0) {
+                alert('Por favor, selecione pelo menos um arquivo primeiro.');
+                return;
+            }
+            
+            showProgress('Iniciando processamento dos arquivos...');
+            processBtn.disabled = true;
+            
+            let todasFolhasPagamento = [];
+            let todasOcorrencias = [];
+            let arquivosProcessados = 0;
+            
+            try {
+                for (const arquivo of arquivosCarregados) {
+                    updateFileStatus(arquivo.id, 'processing');
+                    
+                    updateProgress(
+                        Math.round((arquivosProcessados / arquivosCarregados.length) * 80),
+                        `Processando ${arquivo.name}...`
+                    );
+                    
+                    try {
+                        const arrayBuffer = await arquivo.file.arrayBuffer();
+                        const workbook = XLSX.read(arrayBuffer);
+                        
+                        // Verificar se as abas existem
+                        if (!workbook.SheetNames.includes('Folhas de pagamento')) {
+                            throw new Error(`Aba "Folhas de pagamento" não encontrada em ${arquivo.name}`);
+                        }
+                        if (!workbook.SheetNames.includes('Ocorrências de envio')) {
+                            throw new Error(`Aba "Ocorrências de envio" não encontrada em ${arquivo.name}`);
+                        }
+                        
+                        // Carregar dados
+                        const folhasPagamento = XLSX.utils.sheet_to_json(workbook.Sheets['Folhas de pagamento']);
+                        const ocorrencias = XLSX.utils.sheet_to_json(workbook.Sheets['Ocorrências de envio']);
+                        
+                        // Adicionar origem do arquivo aos dados
+                        const folhasComOrigem = folhasPagamento.map(item => ({
+                            ...item,
+                            '_arquivo_origem': arquivo.name
+                        }));
+                        
+                        const ocorrenciasComOrigem = ocorrencias.map(item => ({
+                            ...item,
+                            '_arquivo_origem': arquivo.name
+                        }));
+                        
+                        todasFolhasPagamento = todasFolhasPagamento.concat(folhasComOrigem);
+                        todasOcorrencias = todasOcorrencias.concat(ocorrenciasComOrigem);
+                        
+                        updateFileStatus(arquivo.id, 'success');
+                        arquivosProcessados++;
+                        
+                    } catch (error) {
+                        updateFileStatus(arquivo.id, 'error', error.message);
+                        console.error(`Erro processando ${arquivo.name}:`, error);
+                        // Continua processando os outros arquivos
+                    }
+                }
+                
+                if (todasFolhasPagamento.length === 0) {
+                    throw new Error('Nenhum dado válido foi encontrado nos arquivos carregados.');
+                }
+                
+                updateProgress(85, 'Criando mapeamento CPF -> CNPJ + Órgão...');
+                
+                // Criar mapeamento CPF -> CNPJ + Órgão
+                const cpfToCnpjOrgao = {};
+                todasFolhasPagamento.forEach(item => {
+                    const cpf = item['CPF (Trabalhador)*'];
+                    const cnpj = item['CNPJ (Empregador)'];
+                    const orgao = item['Número do Orgão (Empregador)'];
+                    
+                    if (cpf && cnpj) {
+                        cpfToCnpjOrgao[cpf] = `${cnpj}_${orgao}`;
+                    }
+                });
+                
+                updateProgress(90, 'Enriquecendo dados de ocorrências...');
+                
+                // Enriquecer ocorrências
+                const ocorrenciasEnriquecidas = todasOcorrencias.map(ocorrencia => {
+                    const cpf = ocorrencia['CPF (Trabalhador)*'];
+                    const cnpjOrgao = cpfToCnpjOrgao[cpf] || 'NAO_ENCONTRADO';
+                    const [cnpj, orgao] = cnpjOrgao.split('_');
+                    
+                    return {
+                        ...ocorrencia,
+                        'CNPJ (Empregador)': cnpj || '',
+                        'Número do Orgão (Empregador)': orgao || '',
+                        'Chave_CNPJ_Orgao': cnpjOrgao
+                    };
+                });
+                
+                // Adicionar chave às folhas de pagamento
+                const folhasPagamentoComChave = todasFolhasPagamento.map(item => ({
+                    ...item,
+                    'Chave_CNPJ_Orgao': `${item['CNPJ (Empregador)']}_${item['Número do Orgão (Empregador)']}`
+                }));
+                
+                updateProgress(95, 'Agrupando dados consolidados...');
+                
+                // Agrupar por CNPJ + Órgão
+                const gruposFolhas = _.groupBy(folhasPagamentoComChave, 'Chave_CNPJ_Orgao');
+                const gruposOcorrencias = _.groupBy(ocorrenciasEnriquecidas, 'Chave_CNPJ_Orgao');
+                
+                dadosProcessados = {
+                    gruposFolhas,
+                    gruposOcorrencias,
+                    totalFolhas: todasFolhasPagamento.length,
+                    totalOcorrencias: todasOcorrencias.length,
+                    totalArquivos: arquivosCarregados.length,
+                    arquivosProcessados: arquivosProcessados
+                };
+                
+                displayStats();
+                generateBtn.disabled = false;
+                
+                updateProgress(100, '✅ Processamento de todos os arquivos concluído!');
+                
+                setTimeout(() => {
+                    hideProgress();
+                    fileStatus.innerHTML = `
+                        <div class="alert alert-success">
+                            <strong>✅ Processamento concluído!</strong> ${arquivosProcessados}/${arquivosCarregados.length} arquivo(s) processado(s) com sucesso. Selecione os grupos desejados e clique em "Baixar ZIP".
+                        </div>
+                    `;
+                }, 500);
+                
+            } catch (error) {
+                hideProgress();
+                fileStatus.innerHTML = `
+                    <div class="alert" style="background: #fed7d7; border-color: #e53e3e; color: #c53030;">
+                        <strong>❌ Erro:</strong> ${error.message}
+                    </div>
+                `;
+                processBtn.disabled = false;
+            }
+        }
+        
+        function displayStats() {
+            const { gruposFolhas, gruposOcorrencias, totalFolhas, totalOcorrencias, totalArquivos, arquivosProcessados } = dadosProcessados;
+            
+            // Estatísticas
+            const totalGrupos = Object.keys(gruposFolhas).length;
+            const cpfsUnicos = new Set();
+            Object.values(gruposFolhas).forEach(grupo => {
+                grupo.forEach(item => cpfsUnicos.add(item['CPF (Trabalhador)*']));
+            });
+            
+            statsGrid.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-number">${arquivosProcessados}/${totalArquivos}</div>
+                    <div class="stat-label">Arquivos processados</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${totalGrupos}</div>
+                    <div class="stat-label">Grupos disponíveis</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${totalFolhas.toLocaleString()}</div>
+                    <div class="stat-label">Registros de Folhas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${totalOcorrencias.toLocaleString()}</div>
+                    <div class="stat-label">Registros de Ocorrências</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${cpfsUnicos.size.toLocaleString()}</div>
+                    <div class="stat-label">CPFs únicos</div>
+                </div>
+            `;
+            
+            // Lista de grupos com checkboxes
+            let groupsHtml = '';
+            Object.keys(gruposFolhas).forEach(chave => {
+                const [cnpj, orgao] = chave.split('_');
+                const folhasGrupo = gruposFolhas[chave] || [];
+                const ocorrenciasGrupo = gruposOcorrencias[chave] || [];
+                const nomeEmpregador = folhasGrupo[0]?.['Nome (Empregador)'] || 'N/A';
+                
+                // Identificar arquivos de origem
+                const arquivosOrigem = [...new Set(folhasGrupo.map(item => item._arquivo_origem))];
+                
+                groupsHtml += `
+                    <div class="group-item">
+                        <input type="checkbox" class="group-checkbox" data-key="${chave}" onchange="updateSelectedCount()">
+                        <div class="group-info">
+                            <div>
+                                <div class="group-name">${nomeEmpregador}</div>
+                                <div class="group-details">CNPJ: ${cnpj} | Órgão: ${orgao || 'N/A'}</div>
+                                <div class="group-details" style="color: #4299e1;">Arquivos: ${arquivosOrigem.join(', ')}</div>
+                            </div>
+                            <div class="group-counts">
+                                ${folhasGrupo.length} folhas<br>
+                                ${ocorrenciasGrupo.length} ocorrências
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            groupsPreview.innerHTML = groupsHtml;
+            statsContainer.style.display = 'block';
+            updateSelectedCount();
+        }
+        
+        function selectAll() {
+            const checkboxes = document.querySelectorAll('.group-checkbox');
+            checkboxes.forEach(cb => cb.checked = true);
+            updateSelectedCount();
+        }
+        
+        function selectNone() {
+            const checkboxes = document.querySelectorAll('.group-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            updateSelectedCount();
+        }
+        
+        function invertSelection() {
+            const checkboxes = document.querySelectorAll('.group-checkbox');
+            checkboxes.forEach(cb => cb.checked = !cb.checked);
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.group-checkbox:checked');
+            const count = checkboxes.length;
+            selectedCount.textContent = `${count} selecionados`;
+            generateBtn.disabled = count === 0;
+        }
+        
+        async function generateFiles() {
+            if (!dadosProcessados) {
+                alert('Por favor, processe os dados primeiro.');
+                return;
+            }
+            
+            const selectedCheckboxes = document.querySelectorAll('.group-checkbox:checked');
+            if (selectedCheckboxes.length === 0) {
+                alert('Por favor, selecione pelo menos um grupo para gerar.');
+                return;
+            }
+            
+            showProgress('Iniciando geração de arquivos...');
+            generateBtn.disabled = true;
+            
+            const { gruposFolhas, gruposOcorrencias } = dadosProcessados;
+            const selectedKeys = Array.from(selectedCheckboxes).map(cb => cb.dataset.key);
+            const totalGrupos = selectedKeys.length;
+            let processados = 0;
+            
+            try {
+                const zip = new JSZip();
+                
+                for (const chave of selectedKeys) {
+                    const [cnpj, orgao] = chave.split('_');
+                    const folhasGrupo = gruposFolhas[chave] || [];
+                    const ocorrenciasGrupo = gruposOcorrencias[chave] || [];
+                    
+                    updateProgress(
+                        Math.round((processados / totalGrupos) * 90),
+                        `Gerando arquivo ${processados + 1}/${totalGrupos}: CNPJ ${cnpj} - Órgão ${orgao}`
+                    );
+                    
+                    // Criar workbook
+                    const wb = XLSX.utils.book_new();
+                    
+                    // Adicionar aba Folhas de pagamento
+                    if (folhasGrupo.length > 0) {
+                        const folhasLimpas = folhasGrupo.map(item => {
+                            const { Chave_CNPJ_Orgao, _arquivo_origem, ...resto } = item;
+                            return resto;
+                        });
+                        const wsFolhas = XLSX.utils.json_to_sheet(folhasLimpas);
+                        XLSX.utils.book_append_sheet(wb, wsFolhas, 'Folhas de pagamento');
+                    }
+                    
+                    // Adicionar aba Ocorrências de envio
+                    if (ocorrenciasGrupo.length > 0) {
+                        const ocorrenciasLimpas = ocorrenciasGrupo.map(item => {
+                            const { Chave_CNPJ_Orgao, _arquivo_origem, ...resto } = item;
+                            return resto;
+                        });
+                        const wsOcorrencias = XLSX.utils.json_to_sheet(ocorrenciasLimpas);
+                        XLSX.utils.book_append_sheet(wb, wsOcorrencias, 'Ocorrências de envio');
+                    }
+                    
+                    // Gerar buffer do arquivo Excel
+                    const excelBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+                    
+                    // Obter nome do empregador/órgão e limpar caracteres especiais
+                    const nomeEmpregador = (folhasGrupo[0]?.['Nome (Empregador)'] || 'Sem_Nome')
+                        .replace(/[<>:"/\\|?*]/g, '_')  // Remove caracteres inválidos para nomes de arquivo
+                        .replace(/\s+/g, '_')           // Substitui espaços por underscore
+                        .substring(0, 50);              // Limita o tamanho para evitar nomes muito longos
+                    
+                    const nomeArquivo = `${cnpj}_Orgao${orgao || 'N_A'}_${nomeEmpregador}.xlsx`;
+                    
+                    // Adicionar ao ZIP
+                    zip.file(nomeArquivo, excelBuffer);
+                    
+                    processados++;
+                    
+                    // Pequena pausa para não travar o navegador
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                
+                updateProgress(95, 'Criando arquivo ZIP...');
+                
+                // Gerar e baixar o ZIP
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+                link.download = `Arquivos_CNPJ_Orgao_${timestamp}.zip`;
+                link.click();
+                
+                updateProgress(100, `✅ ZIP criado com ${totalGrupos} arquivos!`);
+                
+                setTimeout(() => {
+                    hideProgress();
+                    fileStatus.innerHTML = `
+                        <div class="alert alert-success">
+                            <strong>🎉 Geração concluída!</strong> Arquivo ZIP com ${totalGrupos} arquivos Excel foi baixado.
+                        </div>
+                    `;
+                    generateBtn.disabled = false;
+                }, 1000);
+                
+            } catch (error) {
+                hideProgress();
+                fileStatus.innerHTML = `
+                    <div class="alert" style="background: #fed7d7; border-color: #e53e3e; color: #c53030;">
+                        <strong>❌ Erro na geração:</strong> ${error.message}
+                    </div>
+                `;
+                generateBtn.disabled = false;
+            }
+        }
+        
+        function showProgress(text) {
+            progressText.textContent = text;
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+        }
+        
+        function updateProgress(percent, text) {
+            progressText.textContent = text;
+            progressFill.style.width = percent + '%';
+        }
+        
+        function hideProgress() {
+            progressContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
