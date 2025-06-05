@@ -6,7 +6,6 @@
     <title>Gerador de Arquivos por CNPJ + Órgão</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -399,7 +398,7 @@
             </button>
             
             <button id="generateBtn" class="btn btn-secondary" disabled>
-                💾 Baixar ZIP Selecionados
+                💾 Baixar Arquivos Selecionados
             </button>
         </div>
         
@@ -659,7 +658,7 @@
                     hideProgress();
                     fileStatus.innerHTML = `
                         <div class="alert alert-success">
-                            <strong>✅ Processamento concluído!</strong> ${arquivosProcessados}/${arquivosCarregados.length} arquivo(s) processado(s) com sucesso. Selecione os grupos desejados e clique em "Baixar ZIP".
+                            <strong>✅ Processamento concluído!</strong> ${arquivosProcessados}/${arquivosCarregados.length} arquivo(s) processado(s) com sucesso. Selecione os grupos desejados e clique em "Baixar Arquivos".
                         </div>
                     `;
                 }, 500);
@@ -788,16 +787,14 @@
             let processados = 0;
             
             try {
-                const zip = new JSZip();
-                
                 for (const chave of selectedKeys) {
                     const [cnpj, orgao] = chave.split('_');
                     const folhasGrupo = gruposFolhas[chave] || [];
                     const ocorrenciasGrupo = gruposOcorrencias[chave] || [];
                     
                     updateProgress(
-                        Math.round((processados / totalGrupos) * 90),
-                        `Gerando arquivo ${processados + 1}/${totalGrupos}: CNPJ ${cnpj} - Órgão ${orgao}`
+                        Math.round((processados / totalGrupos) * 100),
+                        `Baixando arquivo ${processados + 1}/${totalGrupos}: CNPJ ${cnpj} - Órgão ${orgao}`
                     );
                     
                     // Criar workbook
@@ -823,9 +820,6 @@
                         XLSX.utils.book_append_sheet(wb, wsOcorrencias, 'Ocorrências de envio');
                     }
                     
-                    // Gerar buffer do arquivo Excel
-                    const excelBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
-                    
                     // Obter nome do empregador/órgão e limpar caracteres especiais
                     const nomeEmpregador = (folhasGrupo[0]?.['Nome (Empregador)'] || 'Sem_Nome')
                         .replace(/[<>:"/\\|?*]/g, '_')  // Remove caracteres inválidos para nomes de arquivo
@@ -834,32 +828,22 @@
                     
                     const nomeArquivo = `${cnpj}_Orgao${orgao || 'N_A'}_${nomeEmpregador}.xlsx`;
                     
-                    // Adicionar ao ZIP
-                    zip.file(nomeArquivo, excelBuffer);
+                    // Baixar arquivo individualmente
+                    XLSX.writeFile(wb, nomeArquivo);
                     
                     processados++;
                     
-                    // Pequena pausa para não travar o navegador
-                    await new Promise(resolve => setTimeout(resolve, 50));
+                    // Pequena pausa para não travar o navegador e permitir que o download seja processado
+                    await new Promise(resolve => setTimeout(resolve, 200));
                 }
                 
-                updateProgress(95, 'Criando arquivo ZIP...');
-                
-                // Gerar e baixar o ZIP
-                const zipBlob = await zip.generateAsync({ type: 'blob' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(zipBlob);
-                const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-                link.download = `Arquivos_CNPJ_Orgao_${timestamp}.zip`;
-                link.click();
-                
-                updateProgress(100, `✅ ZIP criado com ${totalGrupos} arquivos!`);
+                updateProgress(100, `✅ ${totalGrupos} arquivos baixados com sucesso!`);
                 
                 setTimeout(() => {
                     hideProgress();
                     fileStatus.innerHTML = `
                         <div class="alert alert-success">
-                            <strong>🎉 Geração concluída!</strong> Arquivo ZIP com ${totalGrupos} arquivos Excel foi baixado.
+                            <strong>🎉 Download concluído!</strong> ${totalGrupos} arquivos Excel foram baixados individualmente.
                         </div>
                     `;
                     generateBtn.disabled = false;
