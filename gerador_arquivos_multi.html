@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Gerador de Arquivos por CNPJ + Órgão</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+=======
+    <title>Gerador de Arquivos por CNPJ + Órgão + Mês</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,7 +23,11 @@
         }
         
         .container {
+<<<<<<< HEAD
             max-width: 1200px;
+=======
+            max-width: 1400px;
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -79,7 +89,11 @@
         
         .stats-grid {
             display: grid;
+<<<<<<< HEAD
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+=======
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
             gap: 15px;
             margin: 20px 0;
         }
@@ -184,7 +198,42 @@
             font-weight: 600;
         }
         
+<<<<<<< HEAD
         .groups-preview {
+=======
+        .files-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px;
+            background: #fafafa;
+            margin: 10px 0;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 8px;
+            margin: 2px 0;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .file-size {
+            color: #666;
+            font-size: 0.8em;
+        }
+        
+        .selection-container {
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
             max-height: 400px;
             overflow-y: auto;
             border: 1px solid #e2e8f0;
@@ -193,6 +242,7 @@
             background: #fafafa;
         }
         
+<<<<<<< HEAD
         .group-item {
             display: flex;
             align-items: center;
@@ -242,6 +292,12 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+=======
+        .selection-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
             flex-wrap: wrap;
         }
         
@@ -249,7 +305,58 @@
             padding: 8px 16px;
             font-size: 0.9em;
             min-width: auto;
+<<<<<<< HEAD
             border-radius: 20px;
+=======
+            border-radius: 25px;
+        }
+        
+        .group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .group-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .group-item.selected {
+            background: #e6fffa;
+            border: 2px solid #38a169;
+        }
+        
+        .group-checkbox {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+        
+        .group-info {
+            flex: 1;
+        }
+        
+        .group-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        .group-details {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .group-counts {
+            font-size: 0.9em;
+            color: #666;
+            text-align: right;
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         }
         
         .alert {
@@ -271,6 +378,15 @@
             color: #2b6cb0;
         }
         
+<<<<<<< HEAD
+=======
+        .alert-warning {
+            background: #fffbeb;
+            border-color: #ed8936;
+            color: #c05621;
+        }
+        
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         .file-input {
             display: none;
         }
@@ -294,6 +410,7 @@
             box-shadow: 0 8px 25px rgba(237, 137, 54, 0.6);
         }
         
+<<<<<<< HEAD
         .file-item {
             display: flex;
             justify-content: space-between;
@@ -356,14 +473,40 @@
             border-radius: 20px;
             font-size: 0.9em;
             font-weight: 600;
+=======
+        .month-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .month-filter label {
+            font-weight: 600;
+            color: #4c51bf;
+        }
+        
+        .month-filter select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            background: white;
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+<<<<<<< HEAD
             <h1>📊 Gerador de Arquivos</h1>
             <p class="subtitle">Separação por CNPJ + Número do Órgão</p>
+=======
+            <h1>📊 Gerador de Arquivos Multi-arquivo</h1>
+            <p class="subtitle">Separação por CNPJ + Órgão + Mês com Seleção Personalizada</p>
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         </div>
         
         <div class="status-card">
@@ -378,6 +521,7 @@
             </div>
         </div>
         
+<<<<<<< HEAD
         <div id="filesListContainer" class="status-card" style="display: none;">
             <div class="status-title">
                 <div class="status-icon">📄</div>
@@ -394,15 +538,53 @@
             </label>
             <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" multiple>
             
+=======
+        <div class="action-buttons">
+            <label for="fileInput" class="file-label">
+                📂 Selecionar Arquivos Excel
+            </label>
+            <input type="file" id="fileInput" class="file-input" accept=".xlsx,.xls" multiple>
+            
+            <div class="file-drop-zone" id="fileDropZone">
+                <div class="drop-zone-content">
+                    <div class="drop-icon">📁</div>
+                    <div class="drop-text">
+                        <strong>Arraste e solte arquivos aqui</strong><br>
+                        ou clique no botão acima para selecionar
+                    </div>
+                    <div class="drop-hint">Suporta múltiplos arquivos .xlsx e .xls</div>
+                </div>
+            </div>
+            
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
             <button id="processBtn" class="btn btn-primary" disabled>
                 🔄 Processar Dados
             </button>
             
             <button id="generateBtn" class="btn btn-secondary" disabled>
+<<<<<<< HEAD
                 💾 Baixar ZIP Selecionados
             </button>
         </div>
         
+=======
+                💾 Gerar Arquivos Selecionados
+            </button>
+        </div>
+        
+        <div id="filesContainer" style="display: none;">
+            <div class="status-card">
+                <div class="status-title">
+                    <div class="status-icon">📄</div>
+                    Arquivos Carregados
+                </div>
+                <div class="files-list" id="filesList">
+                    <!-- Lista de arquivos será inserida aqui -->
+                </div>
+            </div>
+        </div>
+        
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         <div class="progress-container" id="progressContainer">
             <div class="progress-text" id="progressText">Processando...</div>
             <div class="progress-bar">
@@ -423,6 +605,7 @@
             
             <div class="status-card">
                 <div class="status-title">
+<<<<<<< HEAD
                     <div class="status-icon">📋</div>
                     Selecionar Grupos para Geração
                     <div class="selected-count" id="selectedCount">0 selecionados</div>
@@ -435,6 +618,31 @@
                 </div>
                 
                 <div class="groups-preview" id="groupsPreview">
+=======
+                    <div class="status-icon">🎯</div>
+                    Seleção de Arquivos para Geração
+                </div>
+                
+                <div class="month-filter">
+                    <label>Filtrar por mês:</label>
+                    <select id="monthFilter">
+                        <option value="">Todos os meses</option>
+                    </select>
+                    <label>Filtrar por órgão:</label>
+                    <select id="orgaoFilter">
+                        <option value="">Todos os órgãos</option>
+                    </select>
+                </div>
+                
+                <div class="selection-controls">
+                    <button class="btn btn-small btn-primary" onclick="selectAll()">✅ Selecionar Todos</button>
+                    <button class="btn btn-small btn-primary" onclick="deselectAll()">❌ Desmarcar Todos</button>
+                    <button class="btn btn-small btn-primary" onclick="toggleSelection()">🔄 Inverter Seleção</button>
+                    <span id="selectionCount" style="margin-left: 15px; font-weight: bold; color: #4c51bf;"></span>
+                </div>
+                
+                <div class="selection-container" id="groupsSelection">
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                     <!-- Lista de grupos será inserida aqui -->
                 </div>
             </div>
@@ -443,31 +651,54 @@
 
     <script>
         let dadosProcessados = null;
+<<<<<<< HEAD
         let arquivosCarregados = [];
+=======
+        let gruposParaGerar = [];
+        let todosGrupos = [];
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         
         // Elementos DOM
         const fileInput = document.getElementById('fileInput');
         const processBtn = document.getElementById('processBtn');
         const generateBtn = document.getElementById('generateBtn');
         const fileStatus = document.getElementById('fileStatus');
+<<<<<<< HEAD
         const filesListContainer = document.getElementById('filesListContainer');
+=======
+        const filesContainer = document.getElementById('filesContainer');
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         const filesList = document.getElementById('filesList');
         const progressContainer = document.getElementById('progressContainer');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
         const statsContainer = document.getElementById('statsContainer');
         const statsGrid = document.getElementById('statsGrid');
+<<<<<<< HEAD
         const groupsPreview = document.getElementById('groupsPreview');
         const selectedCount = document.getElementById('selectedCount');
+=======
+        const groupsSelection = document.getElementById('groupsSelection');
+        const selectionCount = document.getElementById('selectionCount');
+        const monthFilter = document.getElementById('monthFilter');
+        const orgaoFilter = document.getElementById('orgaoFilter');
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         
         // Event Listeners
         fileInput.addEventListener('change', handleFileUpload);
         processBtn.addEventListener('click', processData);
+<<<<<<< HEAD
         generateBtn.addEventListener('click', generateFiles);
+=======
+        generateBtn.addEventListener('click', generateSelectedFiles);
+        monthFilter.addEventListener('change', filterGroups);
+        orgaoFilter.addEventListener('change', filterGroups);
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
         
         function handleFileUpload(event) {
             const files = Array.from(event.target.files);
             if (files.length > 0) {
+<<<<<<< HEAD
                 arquivosCarregados = files.map((file, index) => ({
                     id: index,
                     file: file,
@@ -600,6 +831,104 @@
                 }
                 
                 updateProgress(85, 'Criando mapeamento CPF -> CNPJ + Órgão...');
+=======
+                let filesHtml = '';
+                let totalSize = 0;
+                
+                files.forEach(file => {
+                    const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+                    totalSize += file.size;
+                    filesHtml += `
+                        <div class="file-item">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${sizeMB} MB</div>
+                        </div>
+                    `;
+                });
+                
+                filesList.innerHTML = filesHtml;
+                filesContainer.style.display = 'block';
+                
+                fileStatus.innerHTML = `
+                    <div class="alert alert-success">
+                        <strong>Arquivos carregados:</strong> ${files.length} arquivo(s) totalizando ${(totalSize / 1024 / 1024).toFixed(2)} MB
+                    </div>
+                `;
+                processBtn.disabled = false;
+            }
+        }
+        
+        function extrairMes(data) {
+            if (!data) return 'NAO_INFORMADO';
+            
+            // Tentar diferentes formatos de data
+            let dataObj;
+            
+            if (typeof data === 'number') {
+                // Data do Excel (número serial)
+                dataObj = new Date((data - 25569) * 86400 * 1000);
+            } else if (typeof data === 'string') {
+                // Tentar parsear string
+                dataObj = new Date(data);
+            } else if (data instanceof Date) {
+                dataObj = data;
+            } else {
+                return 'NAO_INFORMADO';
+            }
+            
+            if (isNaN(dataObj.getTime())) return 'NAO_INFORMADO';
+            
+            const ano = dataObj.getFullYear();
+            const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+            return `${ano}-${mes}`;
+        }
+        
+        async function processData() {
+            if (!fileInput.files.length) {
+                alert('Por favor, selecione pelo menos um arquivo.');
+                return;
+            }
+            
+            showProgress('Iniciando processamento...');
+            processBtn.disabled = true;
+            
+            try {
+                const files = Array.from(fileInput.files);
+                let todasFolhasPagamento = [];
+                let todasOcorrencias = [];
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    updateProgress(
+                        Math.round((i / files.length) * 50),
+                        `Carregando arquivo ${i + 1}/${files.length}: ${file.name}`
+                    );
+                    
+                    const arrayBuffer = await file.arrayBuffer();
+                    const workbook = XLSX.read(arrayBuffer);
+                    
+                    // Verificar se as abas existem
+                    if (!workbook.SheetNames.includes('Folhas de pagamento')) {
+                        throw new Error(`Aba "Folhas de pagamento" não encontrada no arquivo: ${file.name}`);
+                    }
+                    if (!workbook.SheetNames.includes('Ocorrências de envio')) {
+                        throw new Error(`Aba "Ocorrências de envio" não encontrada no arquivo: ${file.name}`);
+                    }
+                    
+                    // Carregar dados
+                    const folhasPagamento = XLSX.utils.sheet_to_json(workbook.Sheets['Folhas de pagamento']);
+                    const ocorrencias = XLSX.utils.sheet_to_json(workbook.Sheets['Ocorrências de envio']);
+                    
+                    // Adicionar origem do arquivo
+                    folhasPagamento.forEach(item => item._origem_arquivo = file.name);
+                    ocorrencias.forEach(item => item._origem_arquivo = file.name);
+                    
+                    todasFolhasPagamento = todasFolhasPagamento.concat(folhasPagamento);
+                    todasOcorrencias = todasOcorrencias.concat(ocorrencias);
+                }
+                
+                updateProgress(60, 'Criando mapeamento CPF -> CNPJ + Órgão...');
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                 
                 // Criar mapeamento CPF -> CNPJ + Órgão
                 const cpfToCnpjOrgao = {};
@@ -613,7 +942,41 @@
                     }
                 });
                 
+<<<<<<< HEAD
                 updateProgress(90, 'Enriquecendo dados de ocorrências...');
+=======
+                updateProgress(70, 'Enriquecendo dados e extraindo meses...');
+                
+                // Enriquecer folhas de pagamento com mês
+                const folhasPagamentoEnriquecidas = todasFolhasPagamento.map(item => {
+                    // Procurar campo de data (vários possíveis nomes)
+                    const possiveisCamposData = [
+                        'Data de Pagamento',
+                        'Data do Pagamento',
+                        'Data',
+                        'Competência',
+                        'Período'
+                    ];
+                    
+                    let dataEncontrada = null;
+                    for (const campo of possiveisCamposData) {
+                        if (item[campo]) {
+                            dataEncontrada = item[campo];
+                            break;
+                        }
+                    }
+                    
+                    const mes = extrairMes(dataEncontrada);
+                    const cnpj = item['CNPJ (Empregador)'];
+                    const orgao = item['Número do Orgão (Empregador)'];
+                    
+                    return {
+                        ...item,
+                        'Mes_Extraido': mes,
+                        'Chave_CNPJ_Orgao_Mes': `${cnpj}_${orgao}_${mes}`
+                    };
+                });
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                 
                 // Enriquecer ocorrências
                 const ocorrenciasEnriquecidas = todasOcorrencias.map(ocorrencia => {
@@ -621,10 +984,32 @@
                     const cnpjOrgao = cpfToCnpjOrgao[cpf] || 'NAO_ENCONTRADO';
                     const [cnpj, orgao] = cnpjOrgao.split('_');
                     
+<<<<<<< HEAD
+=======
+                    // Procurar campo de data nas ocorrências
+                    const possiveisCamposData = [
+                        'Data da Ocorrência',
+                        'Data de Ocorrência',
+                        'Data',
+                        'Competência'
+                    ];
+                    
+                    let dataEncontrada = null;
+                    for (const campo of possiveisCamposData) {
+                        if (ocorrencia[campo]) {
+                            dataEncontrada = ocorrencia[campo];
+                            break;
+                        }
+                    }
+                    
+                    const mes = extrairMes(dataEncontrada);
+                    
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                     return {
                         ...ocorrencia,
                         'CNPJ (Empregador)': cnpj || '',
                         'Número do Orgão (Empregador)': orgao || '',
+<<<<<<< HEAD
                         'Chave_CNPJ_Orgao': cnpjOrgao
                     };
                 });
@@ -640,12 +1025,31 @@
                 // Agrupar por CNPJ + Órgão
                 const gruposFolhas = _.groupBy(folhasPagamentoComChave, 'Chave_CNPJ_Orgao');
                 const gruposOcorrencias = _.groupBy(ocorrenciasEnriquecidas, 'Chave_CNPJ_Orgao');
+=======
+                        'Mes_Extraido': mes,
+                        'Chave_CNPJ_Orgao_Mes': `${cnpj}_${orgao}_${mes}`
+                    };
+                });
+                
+                updateProgress(90, 'Agrupando dados por CNPJ + Órgão + Mês...');
+                
+                // Agrupar por CNPJ + Órgão + Mês
+                const gruposFolhas = _.groupBy(folhasPagamentoEnriquecidas, 'Chave_CNPJ_Orgao_Mes');
+                const gruposOcorrencias = _.groupBy(ocorrenciasEnriquecidas, 'Chave_CNPJ_Orgao_Mes');
+                
+                // Combinar chaves de ambos os grupos
+                const todasChaves = new Set([
+                    ...Object.keys(gruposFolhas),
+                    ...Object.keys(gruposOcorrencias)
+                ]);
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                 
                 dadosProcessados = {
                     gruposFolhas,
                     gruposOcorrencias,
                     totalFolhas: todasFolhasPagamento.length,
                     totalOcorrencias: todasOcorrencias.length,
+<<<<<<< HEAD
                     totalArquivos: arquivosCarregados.length,
                     arquivosProcessados: arquivosProcessados
                 };
@@ -655,11 +1059,25 @@
                 
                 updateProgress(100, '✅ Processamento de todos os arquivos concluído!');
                 
+=======
+                    todasChaves: Array.from(todasChaves)
+                };
+                
+                updateProgress(100, 'Processamento concluído!');
+                
+                displayStats();
+                generateBtn.disabled = false;
+                
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                 setTimeout(() => {
                     hideProgress();
                     fileStatus.innerHTML = `
                         <div class="alert alert-success">
+<<<<<<< HEAD
                             <strong>✅ Processamento concluído!</strong> ${arquivosProcessados}/${arquivosCarregados.length} arquivo(s) processado(s) com sucesso. Selecione os grupos desejados e clique em "Baixar ZIP".
+=======
+                            <strong>✅ Processamento concluído!</strong> ${todasChaves.size} grupos encontrados. Selecione os arquivos desejados abaixo.
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                         </div>
                     `;
                 }, 500);
@@ -676,15 +1094,23 @@
         }
         
         function displayStats() {
+<<<<<<< HEAD
             const { gruposFolhas, gruposOcorrencias, totalFolhas, totalOcorrencias, totalArquivos, arquivosProcessados } = dadosProcessados;
             
             // Estatísticas
             const totalGrupos = Object.keys(gruposFolhas).length;
+=======
+            const { gruposFolhas, gruposOcorrencias, totalFolhas, totalOcorrencias, todasChaves } = dadosProcessados;
+            
+            // Estatísticas
+            const totalGrupos = todasChaves.length;
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
             const cpfsUnicos = new Set();
             Object.values(gruposFolhas).forEach(grupo => {
                 grupo.forEach(item => cpfsUnicos.add(item['CPF (Trabalhador)*']));
             });
             
+<<<<<<< HEAD
             statsGrid.innerHTML = `
                 <div class="stat-item">
                     <div class="stat-number">${arquivosProcessados}/${totalArquivos}</div>
@@ -693,6 +1119,33 @@
                 <div class="stat-item">
                     <div class="stat-number">${totalGrupos}</div>
                     <div class="stat-label">Grupos disponíveis</div>
+=======
+            // Extrair meses e órgãos únicos para os filtros
+            const mesesUnicos = new Set();
+            const orgaosUnicos = new Set();
+            
+            todasChaves.forEach(chave => {
+                const [cnpj, orgao, mes] = chave.split('_');
+                if (mes && mes !== 'NAO_INFORMADO') mesesUnicos.add(mes);
+                if (orgao && orgao !== 'undefined') orgaosUnicos.add(orgao);
+            });
+            
+            // Preencher filtros
+            monthFilter.innerHTML = '<option value="">Todos os meses</option>';
+            Array.from(mesesUnicos).sort().forEach(mes => {
+                monthFilter.innerHTML += `<option value="${mes}">${mes}</option>`;
+            });
+            
+            orgaoFilter.innerHTML = '<option value="">Todos os órgãos</option>';
+            Array.from(orgaosUnicos).sort().forEach(orgao => {
+                orgaoFilter.innerHTML += `<option value="${orgao}">Órgão ${orgao}</option>`;
+            });
+            
+            statsGrid.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-number">${totalGrupos}</div>
+                    <div class="stat-label">Grupos encontrados</div>
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">${totalFolhas.toLocaleString()}</div>
@@ -706,6 +1159,7 @@
                     <div class="stat-number">${cpfsUnicos.size.toLocaleString()}</div>
                     <div class="stat-label">CPFs únicos</div>
                 </div>
+<<<<<<< HEAD
             `;
             
             // Lista de grupos com checkboxes
@@ -733,10 +1187,71 @@
                                 ${ocorrenciasGrupo.length} ocorrências
                             </div>
                         </div>
+=======
+                <div class="stat-item">
+                    <div class="stat-number">${mesesUnicos.size}</div>
+                    <div class="stat-label">Meses diferentes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${orgaosUnicos.size}</div>
+                    <div class="stat-label">Órgãos diferentes</div>
+                </div>
+            `;
+            
+            displayGroups();
+            statsContainer.style.display = 'block';
+        }
+        
+        function displayGroups() {
+            const { gruposFolhas, gruposOcorrencias, todasChaves } = dadosProcessados;
+            
+            // Aplicar filtros
+            const mesFiltered = monthFilter.value;
+            const orgaoFiltered = orgaoFilter.value;
+            
+            let chavesFiltradas = todasChaves.filter(chave => {
+                const [cnpj, orgao, mes] = chave.split('_');
+                
+                if (mesFiltered && mes !== mesFiltered) return false;
+                if (orgaoFiltered && orgao !== orgaoFiltered) return false;
+                
+                return true;
+            });
+            
+            todosGrupos = chavesFiltradas;
+            
+            let groupsHtml = '';
+            chavesFiltradas.forEach(chave => {
+                const [cnpj, orgao, mes] = chave.split('_');
+                const folhasCount = (gruposFolhas[chave] || []).length;
+                const ocorrenciasCount = (gruposOcorrencias[chave] || []).length;
+                
+                // Pegar nome do empregador
+                const exemploFolha = gruposFolhas[chave] ? gruposFolhas[chave][0] : null;
+                const nomeEmpregador = exemploFolha?.['Nome (Empregador)'] || 'N/A';
+                
+                const isSelected = gruposParaGerar.includes(chave);
+                
+                groupsHtml += `
+                    <div class="group-item ${isSelected ? 'selected' : ''}" onclick="toggleGroup('${chave}')">
+                        <input type="checkbox" class="group-checkbox" ${isSelected ? 'checked' : ''} 
+                               onchange="toggleGroup('${chave}')" onclick="event.stopPropagation()">
+                        <div class="group-info">
+                            <div class="group-name">${nomeEmpregador}</div>
+                            <div class="group-details">
+                                CNPJ: ${cnpj} | Órgão: ${orgao} | Mês: ${mes}
+                            </div>
+                        </div>
+                        <div class="group-counts">
+                            ${folhasCount} folhas<br>
+                            ${ocorrenciasCount} ocorrências
+                        </div>
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                     </div>
                 `;
             });
             
+<<<<<<< HEAD
             groupsPreview.innerHTML = groupsHtml;
             statsContainer.style.display = 'block';
             updateSelectedCount();
@@ -775,6 +1290,48 @@
             
             const selectedCheckboxes = document.querySelectorAll('.group-checkbox:checked');
             if (selectedCheckboxes.length === 0) {
+=======
+            groupsSelection.innerHTML = groupsHtml;
+            updateSelectionCount();
+        }
+        
+        function filterGroups() {
+            displayGroups();
+        }
+        
+        function toggleGroup(chave) {
+            const index = gruposParaGerar.indexOf(chave);
+            if (index > -1) {
+                gruposParaGerar.splice(index, 1);
+            } else {
+                gruposParaGerar.push(chave);
+            }
+            displayGroups();
+        }
+        
+        function selectAll() {
+            gruposParaGerar = [...todosGrupos];
+            displayGroups();
+        }
+        
+        function deselectAll() {
+            gruposParaGerar = [];
+            displayGroups();
+        }
+        
+        function toggleSelection() {
+            const novaSeleção = todosGrupos.filter(chave => !gruposParaGerar.includes(chave));
+            gruposParaGerar = novaSeleção;
+            displayGroups();
+        }
+        
+        function updateSelectionCount() {
+            selectionCount.textContent = `${gruposParaGerar.length} de ${todosGrupos.length} selecionados`;
+        }
+        
+        async function generateSelectedFiles() {
+            if (!dadosProcessados || gruposParaGerar.length === 0) {
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                 alert('Por favor, selecione pelo menos um grupo para gerar.');
                 return;
             }
@@ -783,6 +1340,7 @@
             generateBtn.disabled = true;
             
             const { gruposFolhas, gruposOcorrencias } = dadosProcessados;
+<<<<<<< HEAD
             const selectedKeys = Array.from(selectedCheckboxes).map(cb => cb.dataset.key);
             const totalGrupos = selectedKeys.length;
             let processados = 0;
@@ -792,12 +1350,24 @@
                 
                 for (const chave of selectedKeys) {
                     const [cnpj, orgao] = chave.split('_');
+=======
+            let processados = 0;
+            
+            try {
+                for (const chave of gruposParaGerar) {
+                    const [cnpj, orgao, mes] = chave.split('_');
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                     const folhasGrupo = gruposFolhas[chave] || [];
                     const ocorrenciasGrupo = gruposOcorrencias[chave] || [];
                     
                     updateProgress(
+<<<<<<< HEAD
                         Math.round((processados / totalGrupos) * 90),
                         `Gerando arquivo ${processados + 1}/${totalGrupos}: CNPJ ${cnpj} - Órgão ${orgao}`
+=======
+                        Math.round((processados / gruposParaGerar.length) * 100),
+                        `Gerando arquivo ${processados + 1}/${gruposParaGerar.length}: CNPJ ${cnpj} - Órgão ${orgao} - ${mes}`
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                     );
                     
                     // Criar workbook
@@ -806,7 +1376,11 @@
                     // Adicionar aba Folhas de pagamento
                     if (folhasGrupo.length > 0) {
                         const folhasLimpas = folhasGrupo.map(item => {
+<<<<<<< HEAD
                             const { Chave_CNPJ_Orgao, ...resto } = item;
+=======
+                            const { Mes_Extraido, Chave_CNPJ_Orgao_Mes, _origem_arquivo, ...resto } = item;
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                             return resto;
                         });
                         const wsFolhas = XLSX.utils.json_to_sheet(folhasLimpas);
@@ -816,23 +1390,34 @@
                     // Adicionar aba Ocorrências de envio
                     if (ocorrenciasGrupo.length > 0) {
                         const ocorrenciasLimpas = ocorrenciasGrupo.map(item => {
+<<<<<<< HEAD
                             const { Chave_CNPJ_Orgao, ...resto } = item;
+=======
+                            const { Mes_Extraido, Chave_CNPJ_Orgao_Mes, _origem_arquivo, ...resto } = item;
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                             return resto;
                         });
                         const wsOcorrencias = XLSX.utils.json_to_sheet(ocorrenciasLimpas);
                         XLSX.utils.book_append_sheet(wb, wsOcorrencias, 'Ocorrências de envio');
                     }
                     
+<<<<<<< HEAD
                     // Gerar buffer do arquivo Excel
                     const excelBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
                     const nomeArquivo = `${cnpj}_Orgao${orgao || 'N_A'}.xlsx`;
                     
                     // Adicionar ao ZIP
                     zip.file(nomeArquivo, excelBuffer);
+=======
+                    // Gerar arquivo
+                    const nomeArquivo = `${cnpj}_Orgao${orgao}_${mes}.xlsx`;
+                    XLSX.writeFile(wb, nomeArquivo);
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                     
                     processados++;
                     
                     // Pequena pausa para não travar o navegador
+<<<<<<< HEAD
                     await new Promise(resolve => setTimeout(resolve, 50));
                 }
                 
@@ -847,12 +1432,22 @@
                 link.click();
                 
                 updateProgress(100, `✅ ZIP criado com ${totalGrupos} arquivos!`);
+=======
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                updateProgress(100, '✅ Todos os arquivos foram gerados com sucesso!');
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                 
                 setTimeout(() => {
                     hideProgress();
                     fileStatus.innerHTML = `
                         <div class="alert alert-success">
+<<<<<<< HEAD
                             <strong>🎉 Geração concluída!</strong> Arquivo ZIP com ${totalGrupos} arquivos Excel foi baixado.
+=======
+                            <strong>🎉 Geração concluída!</strong> ${gruposParaGerar.length} arquivos Excel foram baixados automaticamente.
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
                         </div>
                     `;
                     generateBtn.disabled = false;
@@ -885,4 +1480,8 @@
         }
     </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 66875947b9259280f77963db634f882aa078af03
